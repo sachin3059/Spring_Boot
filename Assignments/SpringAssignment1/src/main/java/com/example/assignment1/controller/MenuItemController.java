@@ -33,7 +33,8 @@ public class MenuItemController {
     @PostMapping
     public ResponseEntity<MenuItem> createMenuItem(@RequestBody MenuItemRequest request) {
         // TODO: Implement this method
-        return null;
+        MenuItem menuItem = menuItemService.createMenuItem(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(menuItem);
     }
 
     /**
@@ -45,7 +46,8 @@ public class MenuItemController {
     @GetMapping
     public ResponseEntity<List<MenuItem>> getAllMenuItems() {
         // TODO: Implement this method
-        return null;
+        List<MenuItem> menuItems = menuItemService.getAllMenuItems();
+        return ResponseEntity.status(HttpStatus.OK).body(menuItems);
     }
 
     /**
@@ -57,7 +59,8 @@ public class MenuItemController {
     @GetMapping("/{id}")
     public ResponseEntity<MenuItem> getMenuItemById(@PathVariable Long id) {
         // TODO: Implement this method
-        return null;
+        MenuItem menuItem = menuItemService.getMenuItemById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(menuItem);
     }
 
     /**
@@ -70,7 +73,8 @@ public class MenuItemController {
     public ResponseEntity<MenuItem> updateMenuItem(@PathVariable Long id,
                                                    @RequestBody MenuItemRequest request) {
         // TODO: Implement this method
-        return null;
+        MenuItem menuItem = menuItemService.updateMenuItem(id, request);
+        return ResponseEntity.status(HttpStatus.OK).body(menuItem);
     }
 
     /**
@@ -82,6 +86,7 @@ public class MenuItemController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMenuItem(@PathVariable Long id) {
         // TODO: Implement this method
-        return null;
+        menuItemService.deleteMenuItem(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
