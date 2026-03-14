@@ -11,6 +11,7 @@ import com.example.assignment1.service.RestaurantService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -37,8 +38,8 @@ public class RestaurantController {
     @PostMapping
     public ResponseEntity<Restaurant> createRestaurant(@RequestBody RestaurantRequest request) {
         // TODO: Implement this method
-
-        return null;
+        Restaurant restaurant = restaurantService.createRestaurant(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(restaurant);
     }
 
     /**
@@ -53,7 +54,8 @@ public class RestaurantController {
     @GetMapping
     public ResponseEntity<List<Restaurant>> getAllRestaurants() {
         // TODO: Implement this method
-        return null;
+        List<Restaurant> restaurants = restaurantService.getAllRestaurants();
+        return ResponseEntity.status(HttpStatus.OK).body(restaurants);
     }
 
     /**
@@ -68,7 +70,8 @@ public class RestaurantController {
     @GetMapping("/{id}")
     public ResponseEntity<Restaurant> getRestaurantById(@PathVariable Long id) {
         // TODO: Implement this method
-        return null;
+        Restaurant restaurant = restaurantService.getRestaurantById(id);
+        return  ResponseEntity.status(HttpStatus.OK).body(restaurant);
     }
 
     /**
@@ -83,7 +86,8 @@ public class RestaurantController {
     public ResponseEntity<Restaurant> updateRestaurant(@PathVariable Long id,
                                                        @RequestBody RestaurantRequest request) {
         // TODO: Implement this method
-        return null;
+        Restaurant restaurant = restaurantService.updateRestaurant(id, request);
+        return ResponseEntity.status(HttpStatus.OK).body(restaurant);
     }
 
     /**
@@ -98,6 +102,7 @@ public class RestaurantController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRestaurant(@PathVariable Long id) {
         // TODO: Implement this method
-        return null;
+        restaurantService.deleteRestaurant(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
