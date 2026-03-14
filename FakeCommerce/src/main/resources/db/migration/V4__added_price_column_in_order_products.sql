@@ -1,0 +1,2 @@
+ALTER TABLE order_products
+ADD COLUMN price DECIMAL(38, 2) NOT NULL ;

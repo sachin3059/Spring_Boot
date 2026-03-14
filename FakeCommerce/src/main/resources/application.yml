@@ -1,0 +1,31 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: FakeCommerce
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+#  security:
+#    user:
+#      name: ${SECURITY_USERNAME}
+#      password: ${SECURITY_PASSWORD}
+#
+#    jwt:
+#      secret-key: ${JWT_SECRET_KEY}
+#      expiration: ${EXPIRATION_TIME}
+
+
