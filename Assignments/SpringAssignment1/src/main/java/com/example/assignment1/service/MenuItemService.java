@@ -38,7 +38,26 @@ public class MenuItemService {
      */
     public MenuItem createMenuItem(MenuItemRequest request) {
         // TODO: Implement this method
-        return null;
+        if(request.getName() == null || request.getName().isBlank()){
+            throw new InvalidRequestException("Menu item name cannot be empty");
+        }
+
+        if(request.getPrice() <= 0){
+            throw new InvalidRequestException("Menu item price must be greater than 0");
+        }
+
+        if(request.getCategory() == null){
+            throw new InvalidRequestException("Menu item category cannot be null");
+        }
+
+        MenuItem menuItem = new MenuItem();
+        menuItem.setName(request.getName());
+        menuItem.setPrice(request.getPrice());
+        menuItem.setCategory(request.getCategory());
+        menuItem.setDescription(request.getDescription());
+        menuItem.setVegetarian(request.isVegetarian());
+
+        return menuItemRepository.save(menuItem);
     }
 
     /**
@@ -51,7 +70,9 @@ public class MenuItemService {
      */
     public MenuItem getMenuItemById(Long id) {
         // TODO: Implement this method
-        return null;
+        return menuItemRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Menu item not found with id: " + id));
     }
 
     /**
@@ -61,7 +82,7 @@ public class MenuItemService {
      */
     public List<MenuItem> getAllMenuItems() {
         // TODO: Implement this method
-        return null;
+        return menuItemRepository.findAll();
     }
 
     /**
@@ -79,7 +100,22 @@ public class MenuItemService {
      */
     public MenuItem updateMenuItem(Long id, MenuItemRequest request) {
         // TODO: Implement this method
-        return null;
+        MenuItem menuItem = getMenuItemById(id);
+        if(request.getName() == null || request.getName().isBlank()){
+            throw new InvalidRequestException("Menu item name cannot be empty");
+        }
+        if(request.getPrice() <= 0){
+            throw new InvalidRequestException("Menu item price must be greater than 0");
+        }
+        if(request.getCategory() == null){
+            throw new InvalidRequestException("Menu item category cannot be null");
+        }
+        menuItem.setName(request.getName());
+        menuItem.setPrice(request.getPrice());
+        menuItem.setCategory(request.getCategory());
+        menuItem.setDescription(request.getDescription());
+        menuItem.setVegetarian(request.isVegetarian());
+        return menuItemRepository.save(menuItem);
     }
 
     /**
@@ -91,5 +127,7 @@ public class MenuItemService {
      */
     public void deleteMenuItem(Long id) {
         // TODO: Implement this method
+        getMenuItemById(id);
+        menuItemRepository.deleteById(id);
     }
 }
