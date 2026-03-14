@@ -18,6 +18,7 @@ import com.example.assignment1.repository.MenuRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,7 +64,42 @@ public class MenuService {
      */
     public MenuResponse createMenu(MenuRequest request) {
         // TODO: Implement this method
-        return null;
+        if(request.getRestaurantId() == null){
+            throw new InvalidRequestException("Restaurant ID cannot be null");
+        }
+        if(request.getDate() == null){
+            throw new InvalidRequestException("Menu date cannot be null");
+        }
+        if(request.getMealType() == null){
+            throw new InvalidRequestException("Meal type cannot be null");
+        }
+        if(request.getMenuItemIds() == null || request.getMenuItemIds().isEmpty()){
+            throw new InvalidRequestException("Menu must contain at least one item");
+        }
+
+        restaurantService.getRestaurantById(request.getRestaurantId());
+
+        for(Long menuItemId : request.getMenuItemIds()){
+            MenuItem menuItem = menuItemService.getMenuItemById(menuItemId);
+        }
+
+        Optional<Menu> existingMenu = menuRepository.findByRestaurantIdAndDateAndMealType(request.getRestaurantId(), request.getDate(), request.getMealType());
+        if(existingMenu.isPresent()){
+            throw new DuplicateResourceException(
+                    "Menu already exists for restaurant " + request.getRestaurantId()
+                            + " on " + request.getDate()
+                            + " for " + request.getMealType()
+            );
+        }
+
+        Menu menu = new Menu();
+        menu.setDate(request.getDate());
+        menu.setMealType(request.getMealType());
+        menu.setRestaurantId(request.getRestaurantId());
+        menu.setMenuItemIds(request.getMenuItemIds());
+
+        Menu savedMenu = menuRepository.save(menu);
+        return toMenuResponse(savedMenu);
     }
 
     /**
@@ -76,7 +112,11 @@ public class MenuService {
      */
     public MenuResponse getMenuById(Long id) {
         // TODO: Implement this method
-        return null;
+        Menu menu = menuRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Menu not found with id: " + id));
+
+        return toMenuResponse(menu);
     }
 
     /**
@@ -91,7 +131,12 @@ public class MenuService {
      */
     public List<MenuResponse> getAllMenus() {
         // TODO: Implement this method
-        return null;
+        List<Menu> allMenus = menuRepository.findAll();
+        List<MenuResponse> menuResponses = new ArrayList<>();
+        for(Menu menu : allMenus){
+            menuResponses.add(toMenuResponse(menu));
+        }
+        return  menuResponses;
     }
 
     /**
@@ -104,7 +149,13 @@ public class MenuService {
      */
     public List<MenuResponse> getMenusByRestaurantId(Long restaurantId) {
         // TODO: Implement this method
-        return null;
+        restaurantService.getRestaurantById(restaurantId);
+        List<Menu> allMenus = menuRepository.findByRestaurantId(restaurantId);
+        List<MenuResponse> menuResponses = new ArrayList<>();
+        for(Menu menu : allMenus){
+            menuResponses.add(toMenuResponse(menu));
+        }
+        return  menuResponses;
     }
 
     /**
@@ -116,7 +167,12 @@ public class MenuService {
      */
     public List<MenuResponse> getMenusByDate(LocalDate date) {
         // TODO: Implement this method
-        return null;
+        List<Menu> allMenus = menuRepository.findByDate(date);
+        List<MenuResponse> menuResponses = new ArrayList<>();
+        for(Menu menu : allMenus){
+            menuResponses.add(toMenuResponse(menu));
+        }
+        return  menuResponses;
     }
 
     /**
@@ -129,7 +185,12 @@ public class MenuService {
      */
     public List<MenuResponse> getMenusByRestaurantIdAndDate(Long restaurantId, LocalDate date) {
         // TODO: Implement this method
-        return null;
+        List<Menu> allMenus = menuRepository.findByRestaurantIdAndDate(restaurantId, date);
+        List<MenuResponse> menuResponses = new ArrayList<>();
+        for(Menu menu : allMenus){
+            menuResponses.add(toMenuResponse(menu));
+        }
+        return  menuResponses;
     }
 
     /**
@@ -149,7 +210,40 @@ public class MenuService {
      */
     public MenuResponse updateMenu(Long id, MenuRequest request) {
         // TODO: Implement this method
-        return null;
+        Menu menu = menuRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Menu Not Found"));
+
+        if(request.getRestaurantId() == null){
+            throw new InvalidRequestException("Restaurant ID cannot be null");
+        }
+        if(request.getDate() == null){
+            throw new InvalidRequestException("Menu date cannot be null");
+        }
+        if(request.getMealType() == null){
+            throw new InvalidRequestException("Meal type cannot be null");
+        }
+        if (request.getMenuItemIds() == null || request.getMenuItemIds().isEmpty()) {
+            throw new InvalidRequestException("Menu must contain at least one item");
+        }
+
+        restaurantService.getRestaurantById(request.getRestaurantId());
+        for(Long menuItemId : request.getMenuItemIds()){
+            MenuItem menuItem = menuItemService.getMenuItemById(menuItemId);
+        }
+
+        Optional<Menu> duplicateMenu = menuRepository.findByRestaurantIdAndDateAndMealType(request.getRestaurantId(), request.getDate(), request.getMealType());
+        if(duplicateMenu.isPresent()){
+            throw new DuplicateResourceException("Menu already exists for restaurant " + request.getRestaurantId());
+        }
+
+        menu.setDate(request.getDate());
+        menu.setMealType(request.getMealType());
+        menu.setRestaurantId(request.getRestaurantId());
+        menu.setMenuItemIds(request.getMenuItemIds());
+
+        Menu savedMenu = menuRepository.save(menu);
+        return toMenuResponse(savedMenu);
     }
 
     /**
@@ -161,6 +255,11 @@ public class MenuService {
      */
     public void deleteMenu(Long id) {
         // TODO: Implement this method
+        Menu menu = menuRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Menu not found with id: " + id));
+
+        menuRepository.deleteById(menu.getId());
     }
 
     // ═══════════════════════════════════════════════════════════════

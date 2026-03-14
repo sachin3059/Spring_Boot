@@ -7,6 +7,7 @@ package com.example.assignment1.controller;
 
 import com.example.assignment1.dto.MenuRequest;
 import com.example.assignment1.dto.MenuResponse;
+import com.example.assignment1.model.Menu;
 import com.example.assignment1.service.MenuService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -35,7 +36,9 @@ public class MenuController {
     @PostMapping
     public ResponseEntity<MenuResponse> createMenu(@RequestBody MenuRequest request) {
         // TODO: Implement this method
-        return null;
+        MenuResponse menuResponse = menuService.createMenu(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(menuResponse);
+
     }
 
     /**
@@ -47,7 +50,8 @@ public class MenuController {
     @GetMapping
     public ResponseEntity<List<MenuResponse>> getAllMenus() {
         // TODO: Implement this method
-        return null;
+        List<MenuResponse> menuResponse = menuService.getAllMenus();
+        return ResponseEntity.status(HttpStatus.OK).body(menuResponse);
     }
 
     /**
@@ -59,7 +63,8 @@ public class MenuController {
     @GetMapping("/{id}")
     public ResponseEntity<MenuResponse> getMenuById(@PathVariable Long id) {
         // TODO: Implement this method
-        return null;
+        MenuResponse menuResponse = menuService.getMenuById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(menuResponse);
     }
 
     /**
@@ -71,7 +76,8 @@ public class MenuController {
     @GetMapping("/restaurant/{restaurantId}")
     public ResponseEntity<List<MenuResponse>> getMenusByRestaurant(@PathVariable Long restaurantId) {
         // TODO: Implement this method
-        return null;
+        List<MenuResponse> menuResponse = menuService.getMenusByRestaurantId(restaurantId);
+        return ResponseEntity.status(HttpStatus.OK).body(menuResponse);
     }
 
     /**
@@ -87,7 +93,9 @@ public class MenuController {
     public ResponseEntity<List<MenuResponse>> getMenusByDate(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         // TODO: Implement this method
-        return null;
+
+        List<MenuResponse> menuResponse = menuService.getMenusByDate(date);
+        return ResponseEntity.status(HttpStatus.OK).body(menuResponse);
     }
 
     /**
@@ -102,7 +110,8 @@ public class MenuController {
             @PathVariable Long restaurantId,
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         // TODO: Implement this method
-        return null;
+        List<MenuResponse> menuResponses = menuService.getMenusByRestaurantIdAndDate(restaurantId, date);
+        return ResponseEntity.status(HttpStatus.OK).body(menuResponses);
     }
 
     /**
@@ -115,7 +124,8 @@ public class MenuController {
     public ResponseEntity<MenuResponse> updateMenu(@PathVariable Long id,
                                                    @RequestBody MenuRequest request) {
         // TODO: Implement this method
-        return null;
+        MenuResponse menuResponse = menuService.updateMenu(id, request);
+        return ResponseEntity.status(HttpStatus.OK).body(menuResponse);
     }
 
     /**
@@ -127,6 +137,7 @@ public class MenuController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMenu(@PathVariable Long id) {
         // TODO: Implement this method
-        return null;
+        menuService.deleteMenu(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
