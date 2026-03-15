@@ -5,6 +5,7 @@ import com.example.FakeCommerce.aop.TrackTime;
 import com.example.FakeCommerce.dtos.products.ProductRequestDto;
 import com.example.FakeCommerce.dtos.products.ProductResponseDto;
 import com.example.FakeCommerce.dtos.products.ProductWithDetailsResponseDto;
+import com.example.FakeCommerce.exception.ResourceNotFoundException;
 import com.example.FakeCommerce.repository.ProductRepository;
 import com.example.FakeCommerce.schema.Category;
 import com.example.FakeCommerce.schema.Product;
@@ -50,11 +51,16 @@ public class ProductService {
                         .image(product.getImage())
                         .rating(product.getRating())
                         .build())
-                .orElseThrow(() -> new RuntimeException("product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
     }
 
 
     public ProductWithDetailsResponseDto getProductWithDetailsById(Long id) {
+        List<Product> results = productRepository.findProductWithDetailsById(id);
+        if(results.isEmpty()){
+            throw new ResourceNotFoundException("Product not found with id: " + id);
+        }
+
         Product product = productRepository.findProductWithDetailsById(id).get(0);
 
         return ProductWithDetailsResponseDto.builder()
@@ -87,7 +93,10 @@ public class ProductService {
 
 
     public void deleteProduct(Long id){
-        productRepository.deleteById(id);
+
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+        productRepository.delete(product);
     }
 
     public List<Product> getProductsByCategory(String category) {
