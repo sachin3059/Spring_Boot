@@ -40,3 +40,4 @@ out/
 
 ### Env files ###
 .env
+newrelic
