@@ -2,6 +2,7 @@ package com.example.FakeCommerce.service;
 
 
 import com.example.FakeCommerce.dtos.category.CategoryRequestDto;
+import com.example.FakeCommerce.exception.ResourceNotFoundException;
 import com.example.FakeCommerce.repository.CategoryRepository;
 import com.example.FakeCommerce.schema.Category;
 import lombok.RequiredArgsConstructor;
@@ -30,10 +31,13 @@ public class CategoryService {
 
     public Category getCategoryById(Long id) {
         return categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category with id " + id + " not found!"));
     }
 
     public void deleteCategory(Long id){
-        categoryRepository.deleteById(id);
+
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category with id " + id + " not found!"));
+        categoryRepository.delete(category);
     }
 }

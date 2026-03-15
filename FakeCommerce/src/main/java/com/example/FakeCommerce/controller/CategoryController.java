@@ -1,10 +1,10 @@
 package com.example.FakeCommerce.controller;
 
 
-import com.example.FakeCommerce.dtos.api.ApiResponse;
 import com.example.FakeCommerce.dtos.category.CategoryRequestDto;
 import com.example.FakeCommerce.schema.Category;
 import com.example.FakeCommerce.service.CategoryService;
+import com.example.FakeCommerce.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,26 +24,30 @@ public class CategoryController {
             @RequestBody CategoryRequestDto requestDto){
 
         Category category = categoryService.createCategory(requestDto);
-
-        ApiResponse<Category> response =
-                new ApiResponse<>(true, "Category created successfully", category, null);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.success(category, "Created Category"));
     }
 
 
     @GetMapping
-    public List<Category> getCategories(){
-        return categoryService.getAllCategories();
+    public ResponseEntity<ApiResponse<List<Category>>> getCategories(){
+
+        return ResponseEntity
+                .ok(ApiResponse.success(categoryService.getAllCategories(), "Categories fetched successfully"));
     }
 
     @GetMapping("/{id}")
-    public Category getCategoryById(@PathVariable Long id){
-        return categoryService.getCategoryById(id);
+    public ResponseEntity<ApiResponse<Category>> getCategoryById(@PathVariable Long id){
+        Category category = categoryService.getCategoryById(id);
+        return ResponseEntity
+                .ok(ApiResponse.success(category, "Category fetched successfully"));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteCategory(@PathVariable Long id){
+    public ResponseEntity<ApiResponse<Void>> deleteCategory(@PathVariable Long id){
         categoryService.deleteCategory(id);
+        return ResponseEntity
+                .ok(ApiResponse.success(null, "Category deleted successfully"));
     }
 }
